@@ -1,0 +1,30 @@
+"VertexLitGeneric"
+{
+$basetexture "models\brisk\metal_d"
+
+$bumpmap "models\brisk\metal_normal"
+
+$envmap							env_cubemap
+$normalmapalphaenvmapmask		1
+	
+//Urik: following strings taken directly from v_eq_molotov.vmt	
+// $phongexponent 120
+// $phongfresnelranges "[1 0.5 8]"
+// $phongboost 5
+
+// vertexlitgeneric_dx8
+// {
+// $envmaptint "[.05 .03 .01]"
+// $envmap env_cubemap
+	// $envmapmask "models\brisk\metal_d"
+// }
+// vertexlitgeneric_HDR_dx8
+// {
+// $envmaptint "[.22 .12 .07]"
+// $envmap env_cubemap
+	// $envmapmask "models\brisk\metal_d"
+// }
+// $halflambert 1
+// $phong 0
+// "GPU>=2?$phong" 1
+}

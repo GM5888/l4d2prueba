@@ -1,0 +1,6 @@
+VertexLitGeneric
+{
+$basetexture "models\brisk\label"
+$envmap env_cubemap
+$envmapmask "models\brisk\label"
+}

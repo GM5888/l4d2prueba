@@ -1,0 +1,12 @@
+"vertexlitgeneric"
+{
+	"$baseTexture" "models/pkm_coffee/pkm_coffee"
+	"$bumpmap" "models/pkm_coffee/pkm_coffee_normal"
+	"$halflambert" "1"
+
+	"$phong" "1"
+	"$phongexponent" 20
+	"$phongboost"	".25"
+	"$phongfresnelranges"	"[0.1 0.5 1]"
+}
+
