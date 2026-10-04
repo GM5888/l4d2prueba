@@ -1,0 +1,131 @@
+"VertexLitGeneric"
+{
+"$basetexture" "models/sodapills/pic"
+
+"$phong" 			"1"						
+"$phongexponent" 			"1"
+$phongboost                 		"2"
+$phongfresnelranges         		"[.1 1 3]"
+"$phongalbedotint" 			"1"	
+
+$envmap 				env_cubemap
+$normalmapalphaenvmapmask 1	
+$envmapfresnel 			1
+$envmapFresnelMinMaxExp 		"[0 .8 .3]"
+$envmaptint 			"[0.2 0.2 0.2]"
+
+$color2				"[0.9 0.9 0.9]"	
+
+$nocull 1
+
+
+	$numberoflastframe 8 // <== [[MODIFY ONLY THIS]]
+
+
+/// DO NOT TOUCH ANYTHING BELOW THAT POINT without knowing what you're doing
+
+$framec 0 // Here will be stocked a number that is .74 greater than the $numberoflastframe. Since the "Frame" apparently takes only the first part of the number, to have equal RNG on 5 frames, we should add that number here. (Corrected, don't really know why .74 works xD)
+$numberoflastframeplus 0 // This number is used to set the speed of the function that draws the random numbers. A too high value here gives Flickering All Black textures untill it finds a good one, a too low will result in always the first(s) frames showing up. 
+
+// For $numberoflastframeplus , I did a lot of testing. I still don't know how it properly works but it seems that a value that's 2 times lower than $framec gives good results. The problem that seems to appear is that if the object loads...
+// ... long after the map has loaded, it stays black for a few seconds (this also trends to happen if you join a server : the texture will be black a few frames before selecting it's color). I still don't exactly know what causes this and if it's fixable.
+
+
+$ramp 0 // Value to stock the Linear ramp
+$inval 0 // Initial value of the linear ramp. 
+
+$frame 300 // Frame N°. Putting a huge frame here will allow Frame 0 to appear. The $frame rands as long as it's greater than the $framec
+
+// Different numbers
+$zero 0
+$nn .74
+$one 1
+$two 2
+
+$docorr 0 // This value will be set a one if a correction is to do and 0 if not. The "correction" is the process of lowering the $inval if the value of $ramp goes beyond $framec
+$framecdo 0 // This is a variable use to stock the $framec and not touch it. It will be substracted to $inval
+
+
+"Proxies"
+{
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// This section creates the necessary variables from $numberoflastframe 
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	"Add"
+	{
+	   "srcVar1" "$numberoflastframe"
+           	  "srcVar2" "$nn"          
+          	  "resultVar" "$framec"    
+	}
+
+	"Divide"
+	{
+	   "srcVar1" "$framec"
+           	  "srcVar2" "$two"          
+          	  "resultVar" "$numberoflastframeplus"    
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Generating Random Boucling Number
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	"LinearRamp" // This function is an "ever increasing value", since it's not possible to do operations on "$ramp" because it's internally stored, we make this function return to 0 by lowering it's start point if it's result ($ramp) is higher than out max frame (Yeah, this is very unlogical, but it's the only way :P)
+	{
+	"rate" "$numberoflastframeplus" 
+	"initialValue" "$inval"
+	"resultVar" "$ramp"
+	}
+
+	"LessOrEqual" // That function checks if the $ramp got beyond the boundaries, if yes, it changes the $docorr value to 1
+      	  {
+          	  "LessEqualVar" "$zero"
+          	  "greaterVar" "$one"
+          	  "srcVar1" "$ramp"
+           	  "srcVar2" "$framec"          
+          	  "resultVar" "$docorr"    
+       	 }
+
+	"Multiply" // If the $docorr = 0 (No correction to do), this multiplication will always return 0. However, when a correction is to do, $docorr will be equal to 1 and this function will return a $framecdo that's equal to the max frame
+      	  {
+          	  "srcVar1" "$framec"
+           	  "srcVar2" "$docorr"          
+          	  "resultVar" "$framecdo"    
+       	 }	
+	
+	"Subtract" // We substract the $framecdo to the $inval. If $ramp in lower than $framec it won't do anything since the last Proxy will make it =0. If $docorr = 0, this function will have the effect of making the LinearRamp start value lower, and (strangely) reduce the $ramp to it's initial value
+      	  {
+          	  "srcVar1" "$inval"
+           	  "srcVar2" "$framecdo"          
+          	  "resultVar" "$inval"    
+       	 }
+
+	// At that point, we have a generated a looping number from 0 to "last frame" that's stored in the $ramp value. 
+	// This value will then be applied to the frame (see below). The "random" is created by the fact that the LinearRamp proxies load as soon as a game starts, but the $frame can be changed only when the map is loaded...
+	// ... as a result, the final generated number that's stored below will be different depending on how much time it took for the map to start, and since $numberoflastframeplus is kinda high (frame changing every 0.2 sec)...
+	// ... it will give good random numbers
+
+	// The point of all this is to create an alternative to the proxy "GaussianNoise", using the time as a "SuperGlobal" variable, in that way, the VMT that are on a same object will always be the same since we use the time as a random number
+	// Using the "Current Time" proxy wouldn't allow to make the function loop, and my tests with PlayerPosition were not concluent (Impossible to store the variable I wanted to). 
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Break the bond between frame and generation as soon as frame is in boundaries
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	"LessOrEqual"
+       	 {
+          	  "LessEqualVar" "$frame"
+          	  "greaterVar" "$ramp"
+          	  "srcVar1" "$frame"
+           	  "srcVar2" "$framec"            
+          	  "resultVar" "$frame"    
+       	 }
+
+}
+
+	// [Method Created by "Ellie" from L4D2 Workshop, July 2015] : Use it at your convenience
+
+
+}
+

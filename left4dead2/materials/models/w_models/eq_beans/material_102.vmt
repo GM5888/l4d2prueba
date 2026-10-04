@@ -1,0 +1,22 @@
+"VertexLitGeneric"
+{
+$baseTexture "models\w_models\eq_beans\material_103_albedo"
+$bumpmap "models\w_models\eq_beans\material_103_normal"
+
+$envmap env_cubemap
+$envmaptint "[.05 .05 .05]"
+
+$detail "models\w_models\eq_beans\material_103_ao"
+$detailscale 1
+$detailblendfactor .1
+$detailblendmode 2
+
+
+$phong 1
+$phongboost 1
+$phongexponent 50
+$phongfresnelranges "[1 1 1]"
+$phongalbedotint 1
+$halflambert 1
+
+}

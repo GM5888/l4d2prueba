@@ -1,0 +1,24 @@
+"VertexLitGeneric"
+{
+$baseTexture "models\w_models\eq_beans\square"
+$bumpmap "models\w_models\eq_beans\material_103_normal"
+$basemapalphaphongmask 1
+
+$envmap env_cubemap
+$envmaptint "[.65 .65 .65]"
+
+
+
+$phong 1
+$phongboost 25
+$phongexponent 50
+$phongfresnelranges "[1 1 1]"
+
+"GPU<2"
+{
+$baseTexture "models\w_models\eq_beans\material_103_lowend"
+$basemapalphaphongmask 1
+}
+}
+
+//Phong is driving me nuts.
